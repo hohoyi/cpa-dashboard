@@ -429,7 +429,9 @@ function renderDaily(){
   let kpHTML = '';
   if(lesson.points && lesson.points.length){
     lesson.points.forEach(function(kp, i){
-      kpHTML += '<div class="kp-card"><div class="kp-num">知识点 ' + (i+1) + '</div><div class="kp-text">' + kp + '</div></div>';
+      var title = (typeof kp === 'object' && kp.title) ? kp.title : '知识点 ' + (i+1);
+      var content = (typeof kp === 'object' && kp.content) ? kp.content : String(kp);
+      kpHTML += '<div class="kp-card"><div class="kp-num">知识点 ' + (i+1) + ' · ' + title + '</div><div class="kp-text">' + content + '</div></div>';
     });
   }
   document.getElementById('kpContainer').innerHTML = kpHTML;
