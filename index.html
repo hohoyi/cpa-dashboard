@@ -60,12 +60,143 @@ body::before {
   100% { transform: translate(-2%,-2%) rotate(3deg); }
 }
 
+/* ===== LOGIN OVERLAY ===== */
+.login-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg-primary);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.login-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 48px;
+  width: 360px;
+  text-align: center;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.5);
+}
+
+.login-card h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--accent-gold), #fbbf24, var(--accent-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.login-card .subtitle {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 8px;
+  font-weight: 300;
+}
+
+.login-card .version {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: var(--accent-blue-dim);
+  color: var(--accent-blue);
+  border: 1px solid rgba(59,130,246,0.3);
+  margin-bottom: 32px;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 16px;
+  font-family: 'Noto Sans SC', sans-serif;
+  outline: none;
+  text-align: center;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+}
+
+.login-card input:focus {
+  border-color: var(--accent-gold);
+}
+
+.login-card button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+  color: #000;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  letter-spacing: 2px;
+  transition: all 0.2s;
+}
+
+.login-card button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 32px rgba(240,180,41,0.3);
+}
+
+/* ===== VERSION BADGE ===== */
+.version-badge {
+  display: inline-block;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: var(--accent-blue-dim);
+  color: var(--accent-blue);
+  border: 1px solid rgba(59,130,246,0.3);
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* ===== USER BADGE ===== */
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.user-logout-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+}
+
+.user-logout-btn:hover {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+}
+
 .app-container {
   position: relative;
   z-index: 1;
   max-width: 1400px;
   margin: 0 auto;
   padding: 24px;
+  display: none;
 }
 
 .header {
@@ -723,10 +854,22 @@ body::before {
 </head>
 <body>
 
-<div class="app-container">
+<!-- ===== LOGIN PAGE ===== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <h1>CPA 学习仪表盘</h1>
+    <p class="subtitle">地方AMC · 证券IT老兵 · 会计零基础 → CPA持证人</p>
+    <div class="version" id="loginVersionBadge">v1.1.0</div>
+    <input id="loginInput" placeholder="请输入用户名..." onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">进入学习 →</button>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div class="app-container" id="appContainer">
   <header class="header">
     <div class="header-left">
-      <h1>CPA 学习仪表盘</h1>
+      <h1>CPA 学习仪表盘<span class="version-badge" id="versionBadge">v1.1.0</span></h1>
       <p>地方AMC · 证券IT老兵 · 会计零基础 → CPA持证人</p>
     </div>
     <div class="header-right">
@@ -737,6 +880,10 @@ body::before {
         <span>天</span>
       </div>
       <div class="date-display" id="dateDisplay"></div>
+      <div class="user-badge">
+        <span id="userDisplay"></span>
+        <button class="user-logout-btn" onclick="doLogout()">退出</button>
+      </div>
     </div>
   </header>
 
@@ -837,9 +984,40 @@ body::before {
 <div class="toast" id="toast"></div>
 
 <script>
-// ============ DATA STORE ============
-const STORAGE_KEY = 'cpa_dashboard_v1';
+// ===== VERSION & LOGIN =====
+const APP_VERSION = 'v1.1.0';
 
+function getStorageKey() {
+  var user = localStorage.getItem('cpa_dashboard_user');
+  return 'cpa_dashboard_' + (user || 'default');
+}
+
+function getCurrentUser() {
+  return localStorage.getItem('cpa_dashboard_user') || '';
+}
+
+function doLogin() {
+  var name = document.getElementById('loginInput').value.trim();
+  if (!name) { alert('请输入用户名'); return; }
+  localStorage.setItem('cpa_dashboard_user', name);
+  document.getElementById('loginOverlay').style.display = 'none';
+  document.getElementById('appContainer').style.display = 'block';
+  document.getElementById('userDisplay').textContent = '👤 ' + name;
+  appData = loadData();
+  init();
+}
+
+function doLogout() {
+  if (confirm('退出后本地数据将被隐藏，确认退出？')) {
+    localStorage.removeItem('cpa_dashboard_user');
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('loginInput').value = '';
+    document.getElementById('loginInput').focus();
+  }
+}
+
+// ===== DATA STORE =====
 var defaultData = {
   checkins: [],
   streak: 0,
@@ -852,11 +1030,11 @@ var defaultData = {
   timerAccumulated: 0
 };
 
-var appData = loadData();
+var appData = null;
 
 function loadData() {
   try {
-    var raw = localStorage.getItem(STORAGE_KEY);
+    var raw = localStorage.getItem(getStorageKey());
     if (raw) {
       var parsed = JSON.parse(raw);
       var result = {};
@@ -869,10 +1047,10 @@ function loadData() {
 }
 
 function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+  localStorage.setItem(getStorageKey(), JSON.stringify(appData));
 }
 
-// ============ DATE HELPERS ============
+// ===== DATE HELPERS =====
 function todayStr() {
   return new Date().toISOString().split('T')[0];
 }
@@ -882,7 +1060,7 @@ function formatDate(d) {
   return (date.getMonth()+1) + '月' + date.getDate() + '日';
 }
 
-// ============ TOAST ============
+// ===== TOAST =====
 function showToast(msg, type) {
   type = type || 'success';
   var t = document.getElementById('toast');
@@ -891,7 +1069,7 @@ function showToast(msg, type) {
   setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
-// ============ HEADER DATE ============
+// ===== HEADER DATE =====
 function updateDate() {
   var now = new Date();
   var days = ['日','一','二','三','四','五','六'];
@@ -899,7 +1077,7 @@ function updateDate() {
     now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日 周' + days[now.getDay()];
 }
 
-// ============ CHECKIN ============
+// ===== CHECKIN =====
 function renderCheckin() {
   var today = todayStr();
   var checked = appData.checkins.indexOf(today) !== -1;
@@ -967,7 +1145,7 @@ function doCheckin() {
   showToast('打卡成功！连续 ' + streak + ' 天 🔥');
 }
 
-// ============ TIMER ============
+// ===== TIMER =====
 var timerInterval = null;
 
 function toggleTimer() {
@@ -1020,13 +1198,13 @@ function updateTimerDisplay() {
   document.getElementById('timerDisplay').textContent = display;
 }
 
-if (appData.timerRunning && appData.timerStart) {
+if (appData && appData.timerRunning && appData.timerStart) {
   timerInterval = setInterval(updateTimerDisplay, 1000);
   document.getElementById('timerStartBtn').textContent = '停止计时';
   document.getElementById('timerStartBtn').classList.add('active');
 }
 
-// ============ QUIZ ============
+// ===== QUIZ =====
 var quizBank = [
   {
     id: 1,
@@ -1187,7 +1365,7 @@ function answerQuiz(idx) {
   updateStats();
 }
 
-// ============ KNOWLEDGE MAP ============
+// ===== KNOWLEDGE MAP =====
 var kmData = [
   {
     name: '会计',
@@ -1353,7 +1531,7 @@ function setKnowledgeStatus(key, status, btn) {
   updateStats();
 }
 
-// ============ NOTEBOOK ============
+// ===== NOTEBOOK =====
 function toggleNoteTag(btn) {
   btn.classList.toggle('active');
 }
@@ -1458,7 +1636,7 @@ function exportNotes() {
   showToast('笔记已导出 📄');
 }
 
-// ============ STATS UPDATE ============
+// ===== STATS UPDATE =====
 function updateStats() {
   var hours = (appData.totalMinutes / 60).toFixed(1);
   document.getElementById('totalHours').textContent = hours;
@@ -1472,7 +1650,7 @@ function updateStats() {
   document.getElementById('noteCount').textContent = appData.notes.length;
 }
 
-// ============ INIT ============
+// ===== INIT =====
 function init() {
   updateDate();
   renderCheckin();
@@ -1483,7 +1661,21 @@ function init() {
   updateStats();
 }
 
-init();
+// ===== STARTUP: Check login =====
+(function() {
+  var user = getCurrentUser();
+  if (user) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    document.getElementById('userDisplay').textContent = '👤 ' + user;
+    appData = loadData();
+    init();
+  } else {
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('appContainer').style.display = 'none';
+    setTimeout(function() { document.getElementById('loginInput').focus(); }, 100);
+  }
+})();
 </script>
 </body>
-</html
+</html>
