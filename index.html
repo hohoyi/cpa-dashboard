@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPA 学习仪表盘</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --bg-primary: #0a0f1a;
+  --bg-secondary: #111827;
+  --bg-card: #1a2236;
+  --bg-card-hover: #1f2a42;
+  --border: #2a3550;
+  --text-primary: #e8edf5;
+  --text-secondary: #8892a8;
+  --text-muted: #5a6478;
+  --accent-gold: #f0b429;
+  --accent-gold-dim: rgba(240,180,41,0.15);
+  --accent-blue: #3b82f6;
+  --accent-blue-dim: rgba(59,130,246,0.15);
+  --accent-green: #10b981;
+  --accent-green-dim: rgba(16,185,129,0.15);
+  --accent-red: #ef4444;
+  --accent-red-dim: rgba(239,68,68,0.15);
+  --accent-purple: #8b5cf6;
+  --accent-purple-dim: rgba(139,92,246,0.15);
+  --accent-orange: #f97316;
+  --accent-orange-dim: rgba(249,115,22,0.15);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background atmosphere */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(ellipse at 20% 20%, rgba(59,130,246,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 80%, rgba(240,180,41,0.04) 0%, transparent 50%),
+              radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.03) 0%, transparent 60%);
+  z-index: 0;
+  animation: bgShift 20s ease-in-out infinite alternate;
+}
+
+@keyframes bgShift {
+  0% { transform: translate(0,0) rotate(0deg); }
+  100% { transform: translate(-2%,-2%) rotate(3deg); }
+}
+
+/* Layout */
+.app-container {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+
+.header-left h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--accent-gold), #fbbf24, var(--accent-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-left p {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: 300;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-gold-dim);
+  border: 1px solid rgba(240,180,41,0.3);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.streak-badge .fire { font-size: 20px; }
+.streak-badge .num {
+  color: var(--accent-gold);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.date-display {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Stats Row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+}
+
+.stat-card:nth-child(1)::after { background: var(--accent-gold); }
+.stat-card:nth-child(2)::after { background: var(--accent-blue); }
+.stat-card:nth-child(3)::after { background: var(--accent-green); }
+.stat-card:nth-child(4)::after { background: var(--accent-purple); }
+
+.stat-card:hover {
+  background: var(--bg-card-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 32px;
+  font-weight: 900;
+}
+
+.stat-card:nth-child(1) .stat-value { color: var(--accent-gold); }
+.stat-card:nth-child(2) .stat-value { color: var(--accent-blue); }
+.stat-card:nth-child(3) .stat-value { color: var(--accent-green); }
+.stat-card:nth-child(4) .stat-value { color: var(--accent-purple); }
+
+.stat-sub {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+/* Main Grid */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+/* Card Base */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-header h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-header h2 .icon { font-size: 20px; }
+
+.card-body { padding: 20px; }
+
+/* Checkin Section */
+.checkin-area {
+  text-align: center;
+  padding: 20px;
+}
+
+.checkin-btn {
+  background: linear-gradient(135deg, var(--accent-gold), #f59e0b);
+  color: #000;
+  border: none;
+  padding: 14px 48px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Noto Sans SC', sans-serif;
+  letter-spacing: 2px;
+}
+
+.checkin-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 32px rgba(240,180,41,0.3);
+}
+
+.checkin-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.checkin-btn.checked {
+  background: var(--accent-green);
+  color: #fff;
+}
+
+.week-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.week-dot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
+.week-dot.active {
+  border-color: var(--accent-gold);
+  background: var(--accent-gold-dim);
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.week-dot.checked {
+  border-color: var(--accent-green);
+  background: var(--accent-green);
+  color: #fff;
+}
+
+.checkin-msg {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Knowledge Map */
+.km-subjects {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.km-subject {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.km-subject:hover {
+  border-color: var(--accent-blue);
+}
+
+.km-subject-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.02);
+  transition: background 0.2s;
+}
+
+.km-subject-header:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.km-subject-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.km-subject-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.km-progress-bar {
+  width: 120px;
+  height: 6px;
+  background: var(--bg-primary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.km-progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+.km-pct {
+  font-size: 12px;
+  color: var(--text-secondary);
+  min-width: 36px;
+  text-align: right;
+}
+
+.km-chapters {
+  display: none;
+  padding: 8px 16px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.km-chapters.open { display: block; }
+
+.km-chapter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.km-chapter:last-child { border-bottom: none; }
+
+.km-chapter-name {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.km-status-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.km-status-btn {
+  width: 24px; height: 24px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--text-muted);
+}
+
+.km-status-btn:hover { border-color: var(--accent-blue); }
+.km-status-btn.active-learn { background: var(--accent-blue-dim); border-color: var(--accent-blue); color: var(--accent-blue); }
+.km-status-btn.active-done { background: var(--accent-green-dim); border-color: var(--accent-green); color: var(--accent-green); }
+
+/* Quiz Section */
+.quiz-container { min-height: 300px; }
+
+.quiz-question {
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(255,255,255,0.02);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-blue);
+}
+
+.quiz-options { display: flex; flex-direction: column; gap: 8px; }
+
+.quiz-option {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.quiz-option:hover {
+  border-color: var(--accent-blue);
+  background: var(--accent-blue-dim);
+}
+
+.quiz-option.correct {
+  border-color: var(--accent-green);
+  background: var(--accent-green-dim);
+  color: var(--accent-green);
+}
+
+.quiz-option.wrong {
+  border-color: var(--accent-red);
+  background: var(--accent-red-dim);
+  color: var(--accent-red);
+}
+
+.quiz-explanation {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--accent-blue-dim);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  display: none;
+}
+
+.quiz-explanation.show { display: block; }
+
+.quiz-explanation strong { color: var(--accent-blue); }
+
+.quiz-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.quiz-score {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.quiz-next-btn {
+  background: var(--accent-blue);
+  color: #fff;
+  border: none;
+  padding: 8px 24px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+}
+
+.quiz-next-btn:hover { opacity: 0.85; }
+
+/* Notebook */
+.notebook-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.notebook-input, .notebook-textarea {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.notebook-input:focus, .notebook-textarea:focus {
+  border-color: var(--accent-purple);
+}
+
+.notebook-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.notebook-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.notebook-tag {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+}
+
+.notebook-tag:hover, .notebook-tag.active {
+  border-color: var(--accent-purple);
+  background: var(--accent-purple-dim);
+  color: var(--accent-purple);
+}
+
+.notebook-submit {
+  background: var(--accent-purple);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+  align-self: flex-end;
+}
+
+.notebook-submit:hover { opacity: 0.85; }
+
+.notebook-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.notebook-list::-webkit-scrollbar { width: 4px; }
+.notebook-list::-webkit-scrollbar-track { background: transparent; }
+.notebook-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.note-item {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.01);
+  transition: all 0.2s;
+}
+
+.note-item:hover { background: rgba(255,255,255,0.03); }
+
+.note-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.note-item-title {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.note-item-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.note-item-body {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.note-item-tags {
+  display: flex;
+  gap: 4px;
+}
+
+.note-item-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--accent-purple-dim);
+  color: var(--accent-purple);
+}
+
+.note-item-delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.note-item-delete:hover {
+  color: var(--accent-red);
+  background: var(--accent-red-dim);
+}
+
+/* Timer */
+.timer-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.timer-display {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  min-width: 80px;
+}
+
+.timer-btn {
+  padding: 6px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+}
+
+.timer-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+.timer-btn.active { background: var(--accent-gold-dim); border-color: var(--accent-gold); color: var(--accent-gold); }
+
+/* Tab navigation for bottom sections */
+.tab-nav {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+
+.tab-btn {
+  padding: 12px 20px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Noto Sans SC', sans-serif;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-btn:hover { color: var(--text-secondary); }
+.tab-btn.active {
+  color: var(--accent-gold);
+  border-bottom-color: var(--accent-gold);
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Full width section */
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .main-grid { grid-template-columns: 1fr; }
+  .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+
+@media (max-width: 600px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .app-container { padding: 12px; }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.4s ease forwards; }
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  font-size: 14px;
+  z-index: 1000;
+  transform: translateX(120%);
+  transition: transform 0.3s ease;
+  box-shadow: var(--shadow);
+}
+
+.toast.show { transform: translateX(0); }
+.toast.success { background: var(--accent-green); }
+.toast.info { background: var(--accent-blue); }
+
+/* Export button */
+.export-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+}
+
+.export-btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <h1>CPA 学习仪表盘</h1>
+      <p>地方AMC · 证券IT老兵 · 会计零基础 → CPA持证人</p>
+    </div>
+    <div class="header-right">
+      <div class="streak-badge">
+        <span class="fire">🔥</span>
+        <span>连续</span>
+        <span class="num" id="streakNum">0</span>
+        <span>天</span>
+      </div>
+      <div class="date-display" id="dateDisplay"></div>
+    </div>
+  </header>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-card fade-in">
+      <div class="stat-label">累计学习</div>
+      <div class="stat-value" id="totalHours">0</div>
+      <div class="stat-sub">小时</div>
+    </div>
+    <div class="stat-card fade-in" style="animation-delay:0.1s">
+      <div class="stat-label">答题正确率</div>
+      <div class="stat-value" id="accuracy">0%</div>
+      <div class="stat-sub" id="quizCount">共 0 题</div>
+    </div>
+    <div class="stat-card fade-in" style="animation-delay:0.2s">
+      <div class="stat-label">知识点覆盖</div>
+      <div class="stat-value" id="knowledgePct">0%</div>
+      <div class="stat-sub" id="knowledgeCount">0 / 0 个</div>
+    </div>
+    <div class="stat-card fade-in" style="animation-delay:0.3s">
+      <div class="stat-label">业务笔记</div>
+      <div class="stat-value" id="noteCount">0</div>
+      <div class="stat-sub">条记录</div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+
+    <!-- Left: Checkin + Timer -->
+    <div class="card fade-in">
+      <div class="card-header">
+        <h2><span class="icon">📅</span> 每日打卡</h2>
+      </div>
+      <div class="card-body">
+        <div class="checkin-area">
+          <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">今日打卡</button>
+          <div class="week-dots" id="weekDots"></div>
+          <div class="checkin-msg" id="checkinMsg"></div>
+        </div>
+        <div class="timer-section">
+          <div class="timer-display" id="timerDisplay">00:00</div>
+          <button class="timer-btn" id="timerStartBtn" onclick="toggleTimer()">开始计时</button>
+          <button class="timer-btn" onclick="resetTimer()">重置</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Quiz -->
+    <div class="card fade-in" style="animation-delay:0.1s">
+      <div class="card-header">
+        <h2><span class="icon">⚡</span> 每日快问快答</h2>
+        <button class="export-btn" onclick="loadNewQuiz()">换一题</button>
+      </div>
+      <div class="card-body">
+        <div class="quiz-container" id="quizContainer"></div>
+      </div>
+    </div>
+
+    <!-- Knowledge Map -->
+    <div class="card full-width fade-in" style="animation-delay:0.2s">
+      <div class="card-header">
+        <h2><span class="icon">🗺️</span> 知识地图</h2>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <span style="font-size:11px;color:var(--text-muted)">● 学习中</span>
+          <span style="font-size:11px;color:var(--text-muted)">● 已掌握</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="km-subjects" id="kmSubjects"></div>
+      </div>
+    </div>
+
+    <!-- Notebook -->
+    <div class="card full-width fade-in" style="animation-delay:0.3s">
+      <div class="card-header">
+        <h2><span class="icon">📓</span> 业务问题笔记本</h2>
+        <button class="export-btn" onclick="exportNotes()">导出笔记</button>
+      </div>
+      <div class="card-body">
+        <div class="notebook-form">
+          <input class="notebook-input" id="noteTitle" placeholder="问题标题（如：融资租赁为什么不能出表？）">
+          <textarea class="notebook-textarea" id="noteBody" placeholder="详细描述你的问题或学习心得..."></textarea>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="notebook-tags" id="noteTags">
+              <button class="notebook-tag" data-tag="会计" onclick="toggleNoteTag(this)">会计</button>
+              <button class="notebook-tag" data-tag="不良资产" onclick="toggleNoteTag(this)">不良资产</button>
+              <button class="notebook-tag" data-tag="融资租赁" onclick="toggleNoteTag(this)">融资租赁</button>
+              <button class="notebook-tag" data-tag="保理" onclick="toggleNoteTag(this)">保理</button>
+              <button class="notebook-tag" data-tag="小贷" onclick="toggleNoteTag(this)">小贷</button>
+              <button class="notebook-tag" data-tag="税务" onclick="toggleNoteTag(this)">税务</button>
+              <button class="notebook-tag" data-tag="审计" onclick="toggleNoteTag(this)">审计</button>
+              <button class="notebook-tag" data-tag="财管" onclick="toggleNoteTag(this)">财管</button>
+            </div>
+            <button class="notebook-submit" onclick="addNote()">记录</button>
+          </div>
+        </div>
+        <div class="notebook-list" id="notebookList"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ DATA STORE ============
+const STORAGE_KEY = 'cpa_dashboard_v1';
+
+const defaultData = {
+  checkins: [],
+  streak: 0,
+  totalMinutes: 0,
+  quizStats: { total: 0, correct: 0 },
+  knowledgeStatus: {},
+  notes: [],
+  timerRunning: false,
+  timerStart: null,
+  timerAccumulated: 0
+};
+
+let appData = loadData();
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) return { ...defaultData, ...JSON.parse(raw) };
+  } catch(e) {}
+  return { ...defaultData };
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+}
+
+// ============ DATE HELPERS ============
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function formatDate(d) {
+  const date = new Date(d);
+  return `${date.getMonth()+1}月${date.getDate()}日`;
+}
+
+// ============ TOAST ============
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============ HEADER DATE ============
+function updateDate() {
+  const now = new Date();
+  const days = ['日','一','二','三','四','五','六'];
+  document.getElementById('dateDisplay').textContent =
+    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 周${days[now.getDay()]}`;
+}
+
+// ============ CHECKIN ============
+function renderCheckin() {
+  const today = todayStr();
+  const checked = appData.checkins.includes(today);
+  const btn = document.getElementById('checkinBtn');
+
+  if (checked) {
+    btn.textContent = '✓ 已打卡';
+    btn.disabled = true;
+    btn.classList.add('checked');
+  } else {
+    btn.textContent = '今日打卡';
+    btn.disabled = false;
+    btn.classList.remove('checked');
+  }
+
+  // Streak
+  document.getElementById('streakNum').textContent = appData.streak;
+
+  // Week dots
+  const weekDots = document.getElementById('weekDots');
+  const dayLabels = ['一','二','三','四','五','六','日'];
+  const now = new Date();
+  const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1;
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - dayOfWeek + i);
+    const ds = d.toISOString().split('T')[0];
+    const isChecked = appData.checkins.includes(ds);
+    const isToday = ds === today;
+    let cls = 'week-dot';
+    if (isChecked) cls += ' checked';
+    if (isToday) cls += ' active';
+    html += `<div class="${cls}">${dayLabels[i]}</div>`;
+  }
+  weekDots.innerHTML = html;
+
+  // Message
+  const msg = document.getElementById('checkinMsg');
+  if (checked) {
+    const encouragements = ['太棒了，坚持就是胜利！','今天的你比昨天更强！','CPA在向你招手！','优秀是一种习惯！'];
+    msg.textContent = encouragements[Math.floor(Math.random()*encouragements.length)];
+  } else {
+    msg.textContent = '今天还没打卡哦，开始学习吧！';
+  }
+}
+
+function doCheckin() {
+  const today = todayStr();
+  if (appData.checkins.includes(today)) return;
+
+  appData.checkins.push(today);
+
+  // Calculate streak
+  let streak = 1;
+  let d = new Date();
+  d.setDate(d.getDate() - 1);
+  while (true) {
+    const ds = d.toISOString().split('T')[0];
+    if (appData.checkins.includes(ds)) {
+      streak++;
+      d.setDate(d.getDate() - 1);
+    } else break;
+  }
+  appData.streak = streak;
+  saveData();
+  renderCheckin();
+  updateStats();
+  showToast(`打卡成功！连续 ${streak} 天 🔥`);
+}
+
+// ============ TIMER ============
+let timerInterval = null;
+
+function toggleTimer() {
+  if (appData.timerRunning) {
+    // Stop
+    clearInterval(timerInterval);
+    const elapsed = Math.floor((Date.now() - appData.timerStart) / 60000);
+    appData.totalMinutes += elapsed;
+    appData.timerAccumulated += elapsed * 60;
+    appData.timerRunning = false;
+    appData.timerStart = null;
+    saveData();
+    document.getElementById('timerStartBtn').textContent = '开始计时';
+    document.getElementById('timerStartBtn').classList.remove('active');
+    updateStats();
+    showToast(`本次学习 ${elapsed} 分钟，累计 ${appData.totalMinutes} 分钟`);
+  } else {
+    // Start
+    appData.timerRunning = true;
+    appData.timerStart = Date.now();
+    saveData();
+    document.getElementById('timerStartBtn').textContent = '停止计时';
+    document.getElementById('timerStartBtn').classList.add('active');
+    timerInterval = setInterval(updateTimerDisplay, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  if (appData.timerRunning && appData.timerStart) {
+    const elapsed = Math.floor((Date.now() - appData.timerStart) / 60000);
+    appData.totalMinutes += elapsed;
+  }
+  appData.timerRunning = false;
+  appData.timerStart = null;
+  appData.timerAccumulated = 0;
+  saveData();
+  document.getElementById('timerDisplay').textContent = '00:00';
+  document.getElementById('timerStartBtn').textContent = '开始计时';
+  document.getElementById('timerStartBtn').classList.remove('active');
+  updateStats();
+}
+
+function updateTimerDisplay() {
+  let totalSec = appData.timerAccumulated;
+  if (appData.timerRunning && appData.timerStart) {
+    totalSec += Math.floor((Date.now() - appData.timerStart) / 1000);
+  }
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  document.getElementById('timerDisplay').textContent =
+    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// Restore timer if running
+if (appData.timerRunning && appData.timerStart) {
+  timerInterval = setInterval(updateTimerDisplay, 1000);
+  document.getElementById('timerStartBtn').textContent = '停止计时';
+  document.getElementById('timerStartBtn').classList.add('active');
+}
+
+// ============ QUIZ ============
+const quizBank = [
+  {
+    id: 1,
+    subject: '会计',
+    topic: '会计基本假设',
+    question: '以下哪项不属于会计基本假设？',
+    options: ['会计主体', '持续经营', '权责发生制', '货币计量'],
+    answer: 2,
+    explanation: '<strong>会计基本假设</strong>包括四项：会计主体、持续经营、会计分期、货币计量。<br><br>权责发生制是<strong>会计基础</strong>，不是基本假设。它是指收入和费用的确认以权利和义务的发生为标准，而非以现金收付为标准。<br><br>💡 <strong>业务关联</strong>：你们AMC收购不良资产包时，即使还没收到回款，只要风险报酬已转移，就应该确认相关资产——这就是权责发生制的体现。'
+  },
+  {
+    id: 2,
+    subject: '会计',
+    topic: '金融资产分类',
+    question: '你们AMC以1000万元收购一个不良债权包，合同约定固定回收金额，没有其他嵌入衍生条款。该金融资产应分类为：',
+    options: ['以公允价值计量且变动计入当期损益', '以公允价值计量且变动计入其他综合收益', '以摊余成本计量', '长期股权投资'],
+    answer: 2,
+    explanation: '<strong>金融资产分类</strong>的核心判断标准是"合同现金流量特征"（SPPI测试）和"业务模式"。<br><br>该债权包的合同现金流仅为本金+利息的支付，通过SPPI测试；如果业务模式是"持有至到期"，则分类为<strong>以摊余成本计量</strong>。<br><br>💡 <strong>业务关联</strong>：这是你们最核心的业务！理解金融资产三分类（摊余成本/FVOCI/FVTPL）是看懂财务报表的基础。'
+  },
+  {
+    id: 3,
+    subject: '会计',
+    topic: '资产减值',
+    question: '不良债权资产在什么时点需要计提减值准备？',
+    options: ['仅当债务人破产时', '当有客观证据表明发生减值时', '仅在年末统一计提', '不需要计提'],
+    answer: 1,
+    explanation: '根据<strong>预期信用损失模型（ECL）</strong>，金融资产应在每个资产负债表日评估信用风险，计提预期信用损失准备。<br><br>分为三个阶段：<br>• 阶段一：信用风险未显著增加 → 12个月ECL<br>• 阶段二：信用风险显著增加 → 整个存续期ECL<br>• 阶段三：已发生信用减值 → 整个存续期ECL<br><br>💡 <strong>业务关联</strong>：你们财务部门的拨备计提就是基于这个模型。理解ECL能帮你看懂为什么同样的资产包，不同时期的拨备率不同。'
+  },
+  {
+    id: 4,
+    subject: '会计',
+    topic: '新租赁准则',
+    question: '根据新租赁准则（CAS 21），承租人融资租赁的会计处理方式是：',
+    options: ['将租赁计入表外，只确认租金费用', '确认使用权资产和租赁负债（单一模型）', '区分融资租赁和经营租赁分别处理', '只在附注中披露'],
+    answer: 1,
+    explanation: '新租赁准则最大的变化是<strong>承租人不再区分融资租赁和经营租赁</strong>，统一采用"单一模型"：<br>• 借：使用权资产<br>• 贷：租赁负债<br><br>这意味着几乎所有租赁都要"上表"。<br><br>💡 <strong>业务关联</strong>：这对你们融资租赁业务影响巨大。承租人不再能将租赁藏在表外，可能导致部分客户重新评估融资租赁 vs 银行贷款的选择。'
+  },
+  {
+    id: 5,
+    subject: '会计',
+    topic: '收入确认',
+    question: '商业保理业务中，保理手续费收入应在何时确认？',
+    options: ['签订保理合同时一次性确认', '在保理期间分期确认', '收到款项时确认', '客户违约时确认'],
+    answer: 1,
+    explanation: '根据<strong>新收入准则（CAS 14）</strong>，收入确认的核心是"控制权转移"和"履约义务"。<br><br>保理手续费是保理公司在一段时间内提供服务的对价，应在<strong>服务期间分期确认</strong>，而非一次性确认。<br><br>💡 <strong>业务关联</strong>：理解收入确认时点，能帮你理解财务为什么对某些业务收入有不同看法——可能不是不配合，而是会计准则有硬性要求。'
+  },
+  {
+    id: 6,
+    subject: '会计',
+    topic: '实质重于形式',
+    question: '以下哪个场景最能体现"实质重于形式"原则？',
+    options: ['按发票金额入账', '售后回租中确认融资行为而非销售', '固定资产按历史成本计量', '按月编制财务报表'],
+    answer: 1,
+    explanation: '<strong>实质重于形式</strong>是会计信息质量要求之一。售后回租虽然法律形式上是"销售+租赁"，但经济实质是<strong>融资</strong>，因此不确认销售收入。<br><br>💡 <strong>业务关联</strong>：你们的不良资产处置中，很多交易的法律形式和经济实质可能不同（如"债转股"实质是投资而非偿债），理解这个原则能帮你更好地设计交易结构。'
+  },
+  {
+    id: 7,
+    subject: '经济法',
+    topic: '破产法',
+    question: '在破产程序中，AMC作为债权人申报的债权，管理人审查后如有异议，AMC应：',
+    options: ['必须接受管理人的审查结果', '可以向受理破产申请的人民法院提起诉讼', '只能向上级法院申诉', '自行核销该笔债权'],
+    answer: 1,
+    explanation: '根据《企业破产法》第58条，债务人对债权表记载的债权有异议的，可以向受理破产申请的人民法院提起<strong>债权确认诉讼</strong>。<br><br>💡 <strong>业务关联</strong>：作为有司法背景的AMC从业者，你比财务更懂破产程序。结合CPA会计知识（如债务重组的会计处理），你可以在破产重整中发挥独特优势。'
+  },
+  {
+    id: 8,
+    subject: '税法',
+    topic: '不良资产处置增值税',
+    question: 'AMC购入不良债权后，以高于收购价的价格转让，差额部分应缴纳：',
+    options: ['增值税（一般计税6%）', '增值税（简易计税3%）', '不缴纳增值税', '企业所得税'],
+    answer: 1,
+    explanation: '根据财税〔2016〕36号，金融商品转让按照<strong>差额计税</strong>（卖出价-买入价），一般纳税人适用6%税率，但AMC处置不良资产通常适用<strong>简易计税3%</strong>。<br><br>💡 <strong>业务关联</strong>：税务处理直接影响项目收益率测算。理解增值税差额计税，能帮你更准确地评估资产包的真实回报。'
+  },
+  {
+    id: 9,
+    subject: '财管',
+    topic: 'NPV',
+    question: '评估一个不良资产包是否值得收购时，以下哪个指标最关键？',
+    options: ['资产包的账面原值', '净现值（NPV）', '资产包的户数', '出让方是哪家银行'],
+    answer: 1,
+    explanation: '<strong>净现值（NPV）</strong>是投资决策的核心指标：NPV = 未来现金流的现值 - 初始投资。<br><br>对于不良资产包：NPV = Σ(预计各期回收金额 × 折现系数) - 收购价格<br><br>当NPV > 0时，投资可行。<br><br>💡 <strong>业务关联</strong>：你们收购资产包时的定价模型本质上就是NPV计算。学好财管，你能更专业地参与定价讨论。'
+  },
+  {
+    id: 10,
+    subject: '会计',
+    topic: '合并报表',
+    question: 'AMC设立SPV（特殊目的载体）持有不良资产，在什么情况下需要纳入合并报表？',
+    options: ['SPV是独立法人，永远不需要合并', '当AMC对SPV拥有"控制权"时', '仅在SPV亏损时合并', '只在年报中合并'],
+    answer: 1,
+    explanation: '合并报表的核心判断是<strong>"控制"</strong>：即对被投资方拥有权力、享有可变回报、有能力运用权力影响回报金额。<br><br>即使SPV是独立法人，如果AMC实质上控制了它（如通过表决权、合同安排等），就需要合并。<br><br>💡 <strong>业务关联</strong>：AMC常用SPV做资产证券化（ABS）。SPV是否合并直接影响表内资产规模和资本充足率——这就是财务部门关注的核心问题之一。'
+  },
+  {
+    id: 11,
+    subject: '会计',
+    topic: '公允价值计量',
+    question: '不良资产在没有活跃市场报价时，公允价值应如何确定？',
+    options: ['按账面价值确定', '使用估值技术（如收益法、市场法）', '由管理层随意确定', '按零值确定'],
+    answer: 1,
+    explanation: '公允价值计量有三个层次：<br>• <strong>第一层次</strong>：活跃市场报价<br>• <strong>第二层次</strong>：可比资产的市场报价（调整后）<br>• <strong>第三层次</strong>：估值技术（收益法、市场法、成本法）<br><br>不良资产通常属于第三层次。<br><br>💡 <strong>业务关联</strong>：你们处置抵债资产时的定价，本质上就是公允价值评估。理解估值技术，能让你在资产处置谈判中更有底气。'
+  },
+  {
+    id: 12,
+    subject: '审计',
+    topic: '审计意见',
+    question: '如果你们公司年报被出具"保留意见"的审计报告，意味着：',
+    options: ['公司财务完全没问题', '存在重大错报但影响不广泛', '公司即将破产', '审计师拒绝审计'],
+    answer: 1,
+    explanation: '审计意见类型：<br>• <strong>标准无保留意见</strong>：财务报表公允<br>• <strong>保留意见</strong>：存在重大错报但影响不广泛<br>• <strong>否定意见</strong>：存在重大错报且影响广泛<br>• <strong>无法表示意见</strong>：审计范围受限严重<br><br>💡 <strong>业务关联</strong>：作为地方AMC，审计意见直接影响监管评级和融资成本。理解审计逻辑，能帮你更好地配合审计工作。'
+  }
+];
+
+let currentQuiz = null;
+let quizAnswered = false;
+
+function loadNewQuiz() {
+  quizAnswered = false;
+  const idx = Math.floor(Math.random() * quizBank.length);
+  currentQuiz = quizBank[idx];
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = currentQuiz;
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = `
+    <div style="margin-bottom:8px;">
+      <span style="font-size:11px;padding:3px 10px;border-radius:10px;background:var(--accent-blue-dim);color:var(--accent-blue);">${q.subject}</span>
+      <span style="font-size:11px;padding:3px 10px;border-radius:10px;background:var(--accent-gold-dim);color:var(--accent-gold);margin-left:4px;">${q.topic}</span>
+    </div>
+    <div class="quiz-question">${q.question}</div>
+    <div class="quiz-options">
+      ${q.options.map((opt, i) => `
+        <button class="quiz-option" onclick="answerQuiz(${i})" id="opt${i}">
+          <strong>${'ABCD'[i]}.</strong> ${opt}
+        </button>
+      `).join('')}
+    </div>
+    <div class="quiz-explanation" id="quizExplanation">${q.explanation}</div>
+    <div class="quiz-nav">
+      <div class="quiz-score" id="quizScoreDisplay">
+        正确 ${appData.quizStats.correct} / ${appData.quizStats.total}
+      </div>
+      <button class="quiz-next-btn" onclick="loadNewQuiz()">下一题 →</button>
+    </div>
+  `;
+}
+
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+
+  const q = currentQuiz;
+  appData.quizStats.total++;
+
+  document.getElementById('opt' + idx).classList.add(idx === q.answer ? 'correct' : 'wrong');
+  if (idx !== q.answer) {
+    document.getElementById('opt' + q.answer).classList.add('correct');
+  } else {
+    appData.quizStats.correct++;
+  }
+
+  document.getElementById('quizExplanation').classList.add('show');
+  document.getElementById('quizScoreDisplay').textContent =
+    `正确 ${appData.quizStats.correct} / ${appData.quizStats.total}`;
+
+  saveData();
+  updateStats();
+}
+
+// ============ KNOWLEDGE MAP ============
+const kmData = [
+  {
+    name: '会计',
+    color: '#3b82f6',
+    chapters: [
+      '总论（基本假设、信息质量要求）',
+      '会计要素与会计等式',
+      '金融资产（分类、确认、计量）',
+      '存货',
+      '长期股权投资',
+      '固定资产',
+      '无形资产',
+      '投资性房地产',
+      '资产减值',
+      '负债（流动负债+非流动负债）',
+      '所有者权益',
+      '收入、费用和利润',
+      '财务报告',
+      '租赁（新租赁准则）',
+      '持有待售的非流动资产',
+      '债务重组',
+      '外币折算',
+      '会计政策、估计变更和差错更正',
+      '资产负债表日后事项',
+      '合并财务报表'
+    ]
+  },
+  {
+    name: '审计',
+    color: '#8b5cf6',
+    chapters: [
+      '审计概述',
+      '审计计划',
+      '审计证据',
+      '风险评估',
+      '风险应对',
+      '审计抽样',
+      '审计报告',
+      '内部控制审计'
+    ]
+  },
+  {
+    name: '税法',
+    color: '#10b981',
+    chapters: [
+      '增值税',
+      '消费税',
+      '企业所得税',
+      '个人所得税',
+      '土地增值税',
+      '房产税/城镇土地使用税',
+      '印花税',
+      '税收征收管理法'
+    ]
+  },
+  {
+    name: '经济法',
+    color: '#f97316',
+    chapters: [
+      '民法总则与合同法',
+      '公司法',
+      '证券法',
+      '破产法',
+      '票据法',
+      '物权法'
+    ]
+  },
+  {
+    name: '财务成本管理',
+    color: '#ef4444',
+    chapters: [
+      '财务管理概述',
+      '财务报表分析',
+      '价值评估（DCF模型）',
+      '资本预算（NPV/IRR）',
+      '资本成本',
+      '杠杆系数',
+      '营运资本管理',
+      '本量利分析'
+    ]
+  },
+  {
+    name: '公司战略与风险管理',
+    color: '#f0b429',
+    chapters: [
+      '战略分析（PEST/SWOT）',
+      '战略选择',
+      '战略实施',
+      '风险管理与内部控制',
+      '公司治理'
+    ]
+  }
+];
+
+function renderKnowledgeMap() {
+  const container = document.getElementById('kmSubjects');
+  let totalChapters = 0;
+  let learnedChapters = 0;
+
+  let html = '';
+  kmData.forEach((subject, si) => {
+    const subjectKey = `s${si}`;
+    let done = 0, learning = 0;
+    subject.chapters.forEach((ch, ci) => {
+      const key = `${subjectKey}_c${ci}`;
+      const status = appData.knowledgeStatus[key];
+      if (status === 'done') done++;
+      else if (status === 'learning') learning++;
+    });
+    totalChapters += subject.chapters.length;
+    learnedChapters += done;
+
+    const pct = Math.round(((done + learning * 0.5) / subject.chapters.length) * 100);
+
+    html += `
+      <div class="km-subject">
+        <div class="km-subject-header" onclick="toggleChapters('chapters_${si}')">
+          <div class="km-subject-name">
+            <div class="km-subject-dot" style="background:${subject.color}"></div>
+            ${subject.name}
+            <span style="font-size:12px;color:var(--text-muted)">${done}/${subject.chapters.length}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="km-progress-bar">
+              <div class="km-progress-fill" style="width:${pct}%;background:${subject.color}"></div>
+            </div>
+            <span class="km-pct">${pct}%</span>
+          </div>
+        </div>
+        <div class="km-chapters" id="chapters_${si}">
+          ${subject.chapters.map((ch, ci) => {
+            const key = `${subjectKey}_c${ci}`;
+            const status = appData.knowledgeStatus[key] || '';
+            return `
+              <div class="km-chapter">
+                <span class="km-chapter-name">${ch}</span>
+                <div class="km-status-btns">
+                  <button class="km-status-btn ${status==='learning'?'active-learn':''}" onclick="setKnowledgeStatus('${key}','learning',this)" title="学习中">📖</button>
+                  <button class="km-status-btn ${status==='done'?'active-done':''}" onclick="setKnowledgeStatus('${key}','done',this)" title="已掌握">✅</button>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+
+  // Update stats
+  const pct = totalChapters > 0 ? Math.round((learnedChapters / totalChapters) * 100) : 0;
+  document.getElementById('knowledgePct').textContent = pct + '%';
+  document.getElementById('knowledgeCount').textContent = `${learnedChapters} / ${totalChapters} 个`;
+}
+
+function toggleChapters(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function setKnowledgeStatus(key, status, btn) {
+  if (appData.knowledgeStatus[key] === status) {
+    delete appData.knowledgeStatus[key];
+  } else {
+    appData.knowledgeStatus[key] = status;
+  }
+  saveData();
+  renderKnowledgeMap();
+  updateStats();
+}
+
+// ============ NOTEBOOK ============
+function toggleNoteTag(btn) {
+  btn.classList.toggle('active');
+}
+
+function addNote() {
+  const title = document.getElementById('noteTitle').value.trim();
+  const body = document.getElementById('noteBody').value.trim();
+  const tags = Array.from(document.querySelectorAll('.notebook-tag.active')).map(b => b.dataset.tag);
+
+  if (!title) { showToast('请输入问题标题', 'info'); return; }
+  if (!body) { showToast('请输入详细描述', 'info'); return; }
+
+  appData.notes.unshift({
+    id: Date.now(),
+    title,
+    body,
+    tags,
+    date: todayStr()
+  });
+
+  saveData();
+  document.getElementById('noteTitle').value = '';
+  document.getElementById('noteBody').value = '';
+  document.querySelectorAll('.notebook-tag.active').forEach(b => b.classList.remove('active'));
+  renderNotes();
+  updateStats();
+  showToast('笔记已保存 📝');
+}
+
+function deleteNote(id) {
+  appData.notes = appData.notes.filter(n => n.id !== id);
+  saveData();
+  renderNotes();
+  updateStats();
+}
+
+function renderNotes() {
+  const list = document.getElementById('notebookList');
+  if (appData.notes.length === 0) {
+    list.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:32px;font-size:13px;">还没有笔记，记录你的第一个业务问题吧！</div>';
+    return;
+  }
+
+  list.innerHTML = appData.notes.map(n => `
+    <div class="note-item">
+      <div class="note-item-header">
+        <span class="note-item-title">${n.title}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="note-item-date">${formatDate(n.date)}</span>
+          <button class="note-item-delete" onclick="deleteNote(${n.id})" title="删除">✕</button>
+        </div>
+      </div>
+      <div class="note-item-body">${n.body}</div>
+      ${n.tags.length ? `<div class="note-item-tags">${n.tags.map(t => `<span class="note-item-tag">${t}</span>`).join('')}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function exportNotes() {
+  if (appData.notes.length === 0) {
+    showToast('没有笔记可导出', 'info');
+    return;
+  }
+  let text = 'CPA学习笔记 - 导出时间: ' + new Date().toLocaleString() + '\n\n';
+  text += '='.repeat(50) + '\n\n';
+  appData.notes.forEach((n, i) => {
+    text += `【${i+1}】${n.title}\n`;
+    text += `日期: ${formatDate(n.date)}\n`;
+    if (n.tags.length) text += `标签: ${n.tags.join(', ')}\n`;
+    text += `\n${n.body}\n\n`;
+    text += '-'.repeat(40) + '\n\n';
+  });
+
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `CPA学习笔记_${todayStr()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('笔记已导出 📄');
+}
+
+// ============ STATS UPDATE ============
+function updateStats() {
+  // Total hours
+  const hours = (appData.totalMinutes / 60).toFixed(1);
+  document.getElementById('totalHours').textContent = hours;
+
+  // Quiz accuracy
+  const total = appData.quizStats.total;
+  const correct = appData.quizStats.correct;
+  const acc = total > 0 ? Math.round((correct / total) * 100) : 0;
+  document.getElementById('accuracy').textContent = acc + '%';
+  document.getElementById('quizCount').textContent = `共 ${total} 题`;
+
+  // Notes
+  document.getElementById('noteCount').textContent = appData.notes.length;
+}
+
+// ============ INIT ============
+function init() {
+  updateDate();
+  renderCheckin();
+  updateTimerDisplay();
+  loadNewQuiz();
+  renderKnowledgeMap();
+  renderNotes();
+  updateStats();
+}
+
+init();
+</script>
+</body>
+</html>
