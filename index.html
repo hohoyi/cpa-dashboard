@@ -43,7 +43,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Background atmosphere */
 body::before {
   content: '';
   position: fixed;
@@ -61,7 +60,6 @@ body::before {
   100% { transform: translate(-2%,-2%) rotate(3deg); }
 }
 
-/* Layout */
 .app-container {
   position: relative;
   z-index: 1;
@@ -70,7 +68,6 @@ body::before {
   padding: 24px;
 }
 
-/* Header */
 .header {
   display: flex;
   align-items: center;
@@ -128,7 +125,6 @@ body::before {
   font-size: 13px;
 }
 
-/* Stats Row */
 .stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -189,7 +185,6 @@ body::before {
   margin-top: 4px;
 }
 
-/* Main Grid */
 .main-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -197,7 +192,6 @@ body::before {
   margin-bottom: 32px;
 }
 
-/* Card Base */
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -226,7 +220,6 @@ body::before {
 
 .card-body { padding: 20px; }
 
-/* Checkin Section */
 .checkin-area {
   text-align: center;
   padding: 20px;
@@ -301,7 +294,36 @@ body::before {
   color: var(--text-secondary);
 }
 
-/* Knowledge Map */
+.timer-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.timer-display {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-gold);
+  min-width: 80px;
+}
+
+.timer-btn {
+  padding: 6px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'Noto Sans SC', sans-serif;
+  transition: all 0.2s;
+}
+
+.timer-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
+.timer-btn.active { background: var(--accent-gold-dim); border-color: var(--accent-gold); color: var(--accent-gold); }
+
 .km-subjects {
   display: flex;
   flex-direction: column;
@@ -413,7 +435,6 @@ body::before {
 .km-status-btn.active-learn { background: var(--accent-blue-dim); border-color: var(--accent-blue); color: var(--accent-blue); }
 .km-status-btn.active-done { background: var(--accent-green-dim); border-color: var(--accent-green); color: var(--accent-green); }
 
-/* Quiz Section */
 .quiz-container { min-height: 300px; }
 
 .quiz-question {
@@ -499,7 +520,6 @@ body::before {
 
 .quiz-next-btn:hover { opacity: 0.85; }
 
-/* Notebook */
 .notebook-form {
   display: flex;
   flex-direction: column;
@@ -643,72 +663,10 @@ body::before {
   background: var(--accent-red-dim);
 }
 
-/* Timer */
-.timer-section {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.timer-display {
-  font-family: 'Noto Serif SC', serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--accent-gold);
-  min-width: 80px;
-}
-
-.timer-btn {
-  padding: 6px 16px;
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: 12px;
-  font-family: 'Noto Sans SC', sans-serif;
-  transition: all 0.2s;
-}
-
-.timer-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
-.timer-btn.active { background: var(--accent-gold-dim); border-color: var(--accent-gold); color: var(--accent-gold); }
-
-/* Tab navigation for bottom sections */
-.tab-nav {
-  display: flex;
-  gap: 0;
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-}
-
-.tab-btn {
-  padding: 12px 20px;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 13px;
-  font-family: 'Noto Sans SC', sans-serif;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
-
-.tab-btn:hover { color: var(--text-secondary); }
-.tab-btn.active {
-  color: var(--accent-gold);
-  border-bottom-color: var(--accent-gold);
-}
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* Full width section */
 .full-width {
   grid-column: 1 / -1;
 }
 
-/* Responsive */
 @media (max-width: 900px) {
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .main-grid { grid-template-columns: 1fr; }
@@ -720,7 +678,6 @@ body::before {
   .app-container { padding: 12px; }
 }
 
-/* Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -728,7 +685,6 @@ body::before {
 
 .fade-in { animation: fadeIn 0.4s ease forwards; }
 
-/* Toast notification */
 .toast {
   position: fixed;
   top: 24px;
@@ -747,7 +703,6 @@ body::before {
 .toast.success { background: var(--accent-green); }
 .toast.info { background: var(--accent-blue); }
 
-/* Export button */
 .export-btn {
   background: none;
   border: 1px solid var(--border);
@@ -769,7 +724,6 @@ body::before {
 <body>
 
 <div class="app-container">
-  <!-- Header -->
   <header class="header">
     <div class="header-left">
       <h1>CPA 学习仪表盘</h1>
@@ -786,7 +740,6 @@ body::before {
     </div>
   </header>
 
-  <!-- Stats Row -->
   <div class="stats-row">
     <div class="stat-card fade-in">
       <div class="stat-label">累计学习</div>
@@ -810,10 +763,7 @@ body::before {
     </div>
   </div>
 
-  <!-- Main Grid -->
   <div class="main-grid">
-
-    <!-- Left: Checkin + Timer -->
     <div class="card fade-in">
       <div class="card-header">
         <h2><span class="icon">📅</span> 每日打卡</h2>
@@ -832,7 +782,6 @@ body::before {
       </div>
     </div>
 
-    <!-- Right: Quiz -->
     <div class="card fade-in" style="animation-delay:0.1s">
       <div class="card-header">
         <h2><span class="icon">⚡</span> 每日快问快答</h2>
@@ -843,13 +792,12 @@ body::before {
       </div>
     </div>
 
-    <!-- Knowledge Map -->
     <div class="card full-width fade-in" style="animation-delay:0.2s">
       <div class="card-header">
         <h2><span class="icon">🗺️</span> 知识地图</h2>
         <div style="display:flex;gap:8px;align-items:center;">
-          <span style="font-size:11px;color:var(--text-muted)">● 学习中</span>
-          <span style="font-size:11px;color:var(--text-muted)">● 已掌握</span>
+          <span style="font-size:11px;color:var(--text-muted)">📖 学习中</span>
+          <span style="font-size:11px;color:var(--text-muted)">✅ 已掌握</span>
         </div>
       </div>
       <div class="card-body">
@@ -857,7 +805,6 @@ body::before {
       </div>
     </div>
 
-    <!-- Notebook -->
     <div class="card full-width fade-in" style="animation-delay:0.3s">
       <div class="card-header">
         <h2><span class="icon">📓</span> 业务问题笔记本</h2>
@@ -884,18 +831,16 @@ body::before {
         <div class="notebook-list" id="notebookList"></div>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ============ DATA STORE ============
 const STORAGE_KEY = 'cpa_dashboard_v1';
 
-const defaultData = {
+var defaultData = {
   checkins: [],
   streak: 0,
   totalMinutes: 0,
@@ -907,14 +852,20 @@ const defaultData = {
   timerAccumulated: 0
 };
 
-let appData = loadData();
+var appData = loadData();
 
 function loadData() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return { ...defaultData, ...JSON.parse(raw) };
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      var result = {};
+      for (var k in defaultData) { result[k] = defaultData[k]; }
+      for (var k in parsed) { result[k] = parsed[k]; }
+      return result;
+    }
   } catch(e) {}
-  return { ...defaultData };
+  return JSON.parse(JSON.stringify(defaultData));
 }
 
 function saveData() {
@@ -927,31 +878,32 @@ function todayStr() {
 }
 
 function formatDate(d) {
-  const date = new Date(d);
-  return `${date.getMonth()+1}月${date.getDate()}日`;
+  var date = new Date(d);
+  return (date.getMonth()+1) + '月' + date.getDate() + '日';
 }
 
 // ============ TOAST ============
-function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
+function showToast(msg, type) {
+  type = type || 'success';
+  var t = document.getElementById('toast');
   t.textContent = msg;
   t.className = 'toast ' + type + ' show';
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
 // ============ HEADER DATE ============
 function updateDate() {
-  const now = new Date();
-  const days = ['日','一','二','三','四','五','六'];
+  var now = new Date();
+  var days = ['日','一','二','三','四','五','六'];
   document.getElementById('dateDisplay').textContent =
-    `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 周${days[now.getDay()]}`;
+    now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日 周' + days[now.getDay()];
 }
 
 // ============ CHECKIN ============
 function renderCheckin() {
-  const today = todayStr();
-  const checked = appData.checkins.includes(today);
-  const btn = document.getElementById('checkinBtn');
+  var today = todayStr();
+  var checked = appData.checkins.indexOf(today) !== -1;
+  var btn = document.getElementById('checkinBtn');
 
   if (checked) {
     btn.textContent = '✓ 已打卡';
@@ -963,32 +915,29 @@ function renderCheckin() {
     btn.classList.remove('checked');
   }
 
-  // Streak
   document.getElementById('streakNum').textContent = appData.streak;
 
-  // Week dots
-  const weekDots = document.getElementById('weekDots');
-  const dayLabels = ['一','二','三','四','五','六','日'];
-  const now = new Date();
-  const dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1;
-  let html = '';
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(now);
+  var weekDots = document.getElementById('weekDots');
+  var dayLabels = ['一','二','三','四','五','六','日'];
+  var now = new Date();
+  var dayOfWeek = now.getDay() === 0 ? 6 : now.getDay() - 1;
+  var html = '';
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(now);
     d.setDate(d.getDate() - dayOfWeek + i);
-    const ds = d.toISOString().split('T')[0];
-    const isChecked = appData.checkins.includes(ds);
-    const isToday = ds === today;
-    let cls = 'week-dot';
+    var ds = d.toISOString().split('T')[0];
+    var isChecked = appData.checkins.indexOf(ds) !== -1;
+    var isToday = ds === today;
+    var cls = 'week-dot';
     if (isChecked) cls += ' checked';
     if (isToday) cls += ' active';
-    html += `<div class="${cls}">${dayLabels[i]}</div>`;
+    html += '<div class="' + cls + '">' + dayLabels[i] + '</div>';
   }
   weekDots.innerHTML = html;
 
-  // Message
-  const msg = document.getElementById('checkinMsg');
+  var msg = document.getElementById('checkinMsg');
   if (checked) {
-    const encouragements = ['太棒了，坚持就是胜利！','今天的你比昨天更强！','CPA在向你招手！','优秀是一种习惯！'];
+    var encouragements = ['太棒了，坚持就是胜利！','今天的你比昨天更强！','CPA在向你招手！','优秀是一种习惯！'];
     msg.textContent = encouragements[Math.floor(Math.random()*encouragements.length)];
   } else {
     msg.textContent = '今天还没打卡哦，开始学习吧！';
@@ -996,18 +945,17 @@ function renderCheckin() {
 }
 
 function doCheckin() {
-  const today = todayStr();
-  if (appData.checkins.includes(today)) return;
+  var today = todayStr();
+  if (appData.checkins.indexOf(today) !== -1) return;
 
   appData.checkins.push(today);
 
-  // Calculate streak
-  let streak = 1;
-  let d = new Date();
+  var streak = 1;
+  var d = new Date();
   d.setDate(d.getDate() - 1);
   while (true) {
-    const ds = d.toISOString().split('T')[0];
-    if (appData.checkins.includes(ds)) {
+    var ds = d.toISOString().split('T')[0];
+    if (appData.checkins.indexOf(ds) !== -1) {
       streak++;
       d.setDate(d.getDate() - 1);
     } else break;
@@ -1016,17 +964,16 @@ function doCheckin() {
   saveData();
   renderCheckin();
   updateStats();
-  showToast(`打卡成功！连续 ${streak} 天 🔥`);
+  showToast('打卡成功！连续 ' + streak + ' 天 🔥');
 }
 
 // ============ TIMER ============
-let timerInterval = null;
+var timerInterval = null;
 
 function toggleTimer() {
   if (appData.timerRunning) {
-    // Stop
     clearInterval(timerInterval);
-    const elapsed = Math.floor((Date.now() - appData.timerStart) / 60000);
+    var elapsed = Math.floor((Date.now() - appData.timerStart) / 60000);
     appData.totalMinutes += elapsed;
     appData.timerAccumulated += elapsed * 60;
     appData.timerRunning = false;
@@ -1035,9 +982,8 @@ function toggleTimer() {
     document.getElementById('timerStartBtn').textContent = '开始计时';
     document.getElementById('timerStartBtn').classList.remove('active');
     updateStats();
-    showToast(`本次学习 ${elapsed} 分钟，累计 ${appData.totalMinutes} 分钟`);
+    showToast('本次学习 ' + elapsed + ' 分钟，累计 ' + appData.totalMinutes + ' 分钟');
   } else {
-    // Start
     appData.timerRunning = true;
     appData.timerStart = Date.now();
     saveData();
@@ -1050,7 +996,7 @@ function toggleTimer() {
 function resetTimer() {
   clearInterval(timerInterval);
   if (appData.timerRunning && appData.timerStart) {
-    const elapsed = Math.floor((Date.now() - appData.timerStart) / 60000);
+    var elapsed = Math.floor((Date.now() - appData.timerStart) / 60000);
     appData.totalMinutes += elapsed;
   }
   appData.timerRunning = false;
@@ -1064,17 +1010,16 @@ function resetTimer() {
 }
 
 function updateTimerDisplay() {
-  let totalSec = appData.timerAccumulated;
+  var totalSec = appData.timerAccumulated;
   if (appData.timerRunning && appData.timerStart) {
     totalSec += Math.floor((Date.now() - appData.timerStart) / 1000);
   }
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
-  document.getElementById('timerDisplay').textContent =
-    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  var m = Math.floor(totalSec / 60);
+  var s = totalSec % 60;
+  var display = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  document.getElementById('timerDisplay').textContent = display;
 }
 
-// Restore timer if running
 if (appData.timerRunning && appData.timerStart) {
   timerInterval = setInterval(updateTimerDisplay, 1000);
   document.getElementById('timerStartBtn').textContent = '停止计时';
@@ -1082,7 +1027,7 @@ if (appData.timerRunning && appData.timerStart) {
 }
 
 // ============ QUIZ ============
-const quizBank = [
+var quizBank = [
   {
     id: 1,
     subject: '会计',
@@ -1193,50 +1138,42 @@ const quizBank = [
   }
 ];
 
-let currentQuiz = null;
-let quizAnswered = false;
+var currentQuiz = null;
+var quizAnswered = false;
 
 function loadNewQuiz() {
   quizAnswered = false;
-  const idx = Math.floor(Math.random() * quizBank.length);
+  var idx = Math.floor(Math.random() * quizBank.length);
   currentQuiz = quizBank[idx];
   renderQuiz();
 }
 
 function renderQuiz() {
-  const q = currentQuiz;
-  const container = document.getElementById('quizContainer');
-  container.innerHTML = `
-    <div style="margin-bottom:8px;">
-      <span style="font-size:11px;padding:3px 10px;border-radius:10px;background:var(--accent-blue-dim);color:var(--accent-blue);">${q.subject}</span>
-      <span style="font-size:11px;padding:3px 10px;border-radius:10px;background:var(--accent-gold-dim);color:var(--accent-gold);margin-left:4px;">${q.topic}</span>
-    </div>
-    <div class="quiz-question">${q.question}</div>
-    <div class="quiz-options">
-      ${q.options.map((opt, i) => `
-        <button class="quiz-option" onclick="answerQuiz(${i})" id="opt${i}">
-          <strong>${'ABCD'[i]}.</strong> ${opt}
-        </button>
-      `).join('')}
-    </div>
-    <div class="quiz-explanation" id="quizExplanation">${q.explanation}</div>
-    <div class="quiz-nav">
-      <div class="quiz-score" id="quizScoreDisplay">
-        正确 ${appData.quizStats.correct} / ${appData.quizStats.total}
-      </div>
-      <button class="quiz-next-btn" onclick="loadNewQuiz()">下一题 →</button>
-    </div>
-  `;
+  var q = currentQuiz;
+  var container = document.getElementById('quizContainer');
+  var optionsHtml = '';
+  for (var i = 0; i < q.options.length; i++) {
+    optionsHtml += '<button class="quiz-option" onclick="answerQuiz(' + i + ')" id="opt' + i + '"><strong>' + 'ABCD'[i] + '.</strong> ' + q.options[i] + '</button>';
+  }
+  container.innerHTML = '<div style="margin-bottom:8px;">' +
+    '<span style="font-size:11px;padding:3px 10px;border-radius:10px;background:var(--accent-blue-dim);color:var(--accent-blue);">' + q.subject + '</span>' +
+    '<span style="font-size:11px;padding:3px 10px;border-radius:10px;background:var(--accent-gold-dim);color:var(--accent-gold);margin-left:4px;">' + q.topic + '</span></div>' +
+    '<div class="quiz-question">' + q.question + '</div>' +
+    '<div class="quiz-options">' + optionsHtml + '</div>' +
+    '<div class="quiz-explanation" id="quizExplanation">' + q.explanation + '</div>' +
+    '<div class="quiz-nav"><div class="quiz-score" id="quizScoreDisplay">正确 ' + appData.quizStats.correct + ' / ' + appData.quizStats.total + '</div>' +
+    '<button class="quiz-next-btn" onclick="loadNewQuiz()">下一题 →</button></div>';
 }
 
 function answerQuiz(idx) {
   if (quizAnswered) return;
   quizAnswered = true;
 
-  const q = currentQuiz;
+  var q = currentQuiz;
   appData.quizStats.total++;
 
-  document.getElementById('opt' + idx).classList.add(idx === q.answer ? 'correct' : 'wrong');
+  var optEl = document.getElementById('opt' + idx);
+  optEl.classList.add(idx === q.answer ? 'correct' : 'wrong');
   if (idx !== q.answer) {
     document.getElementById('opt' + q.answer).classList.add('correct');
   } else {
@@ -1244,15 +1181,14 @@ function answerQuiz(idx) {
   }
 
   document.getElementById('quizExplanation').classList.add('show');
-  document.getElementById('quizScoreDisplay').textContent =
-    `正确 ${appData.quizStats.correct} / ${appData.quizStats.total}`;
+  document.getElementById('quizScoreDisplay').textContent = '正确 ' + appData.quizStats.correct + ' / ' + appData.quizStats.total;
 
   saveData();
   updateStats();
 }
 
 // ============ KNOWLEDGE MAP ============
-const kmData = [
+var kmData = [
   {
     name: '会计',
     color: '#3b82f6',
@@ -1347,65 +1283,59 @@ const kmData = [
 ];
 
 function renderKnowledgeMap() {
-  const container = document.getElementById('kmSubjects');
-  let totalChapters = 0;
-  let learnedChapters = 0;
+  var container = document.getElementById('kmSubjects');
+  var totalChapters = 0;
+  var learnedChapters = 0;
 
-  let html = '';
-  kmData.forEach((subject, si) => {
-    const subjectKey = `s${si}`;
-    let done = 0, learning = 0;
-    subject.chapters.forEach((ch, ci) => {
-      const key = `${subjectKey}_c${ci}`;
-      const status = appData.knowledgeStatus[key];
+  var html = '';
+  for (var si = 0; si < kmData.length; si++) {
+    var subject = kmData[si];
+    var subjectKey = 's' + si;
+    var done = 0, learning = 0;
+    for (var ci = 0; ci < subject.chapters.length; ci++) {
+      var key = subjectKey + '_c' + ci;
+      var status = appData.knowledgeStatus[key];
       if (status === 'done') done++;
       else if (status === 'learning') learning++;
-    });
+    }
     totalChapters += subject.chapters.length;
     learnedChapters += done;
 
-    const pct = Math.round(((done + learning * 0.5) / subject.chapters.length) * 100);
+    var pct = Math.round(((done + learning * 0.5) / subject.chapters.length) * 100);
 
-    html += `
-      <div class="km-subject">
-        <div class="km-subject-header" onclick="toggleChapters('chapters_${si}')">
-          <div class="km-subject-name">
-            <div class="km-subject-dot" style="background:${subject.color}"></div>
-            ${subject.name}
-            <span style="font-size:12px;color:var(--text-muted)">${done}/${subject.chapters.length}</span>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div class="km-progress-bar">
-              <div class="km-progress-fill" style="width:${pct}%;background:${subject.color}"></div>
-            </div>
-            <span class="km-pct">${pct}%</span>
-          </div>
-        </div>
-        <div class="km-chapters" id="chapters_${si}">
-          ${subject.chapters.map((ch, ci) => {
-            const key = `${subjectKey}_c${ci}`;
-            const status = appData.knowledgeStatus[key] || '';
-            return `
-              <div class="km-chapter">
-                <span class="km-chapter-name">${ch}</span>
-                <div class="km-status-btns">
-                  <button class="km-status-btn ${status==='learning'?'active-learn':''}" onclick="setKnowledgeStatus('${key}','learning',this)" title="学习中">📖</button>
-                  <button class="km-status-btn ${status==='done'?'active-done':''}" onclick="setKnowledgeStatus('${key}','done',this)" title="已掌握">✅</button>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `;
-  });
+    html += '<div class="km-subject">' +
+      '<div class="km-subject-header" onclick="toggleChapters(\'chapters_' + si + '\')">' +
+        '<div class="km-subject-name">' +
+          '<div class="km-subject-dot" style="background:' + subject.color + '"></div>' +
+          subject.name +
+          '<span style="font-size:12px;color:var(--text-muted)">' + done + '/' + subject.chapters.length + '</span>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          '<div class="km-progress-bar"><div class="km-progress-fill" style="width:' + pct + '%;background:' + subject.color + '"></div></div>' +
+          '<span class="km-pct">' + pct + '%</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="km-chapters" id="chapters_' + si + '">';
+
+    for (var ci = 0; ci < subject.chapters.length; ci++) {
+      var key = subjectKey + '_c' + ci;
+      var status = appData.knowledgeStatus[key] || '';
+      html += '<div class="km-chapter">' +
+        '<span class="km-chapter-name">' + subject.chapters[ci] + '</span>' +
+        '<div class="km-status-btns">' +
+          '<button class="km-status-btn ' + (status==='learning'?'active-learn':'') + '" onclick="setKnowledgeStatus(\'' + key + '\',\'learning\',this)" title="学习中">📖</button>' +
+          '<button class="km-status-btn ' + (status==='done'?'active-done':'') + '" onclick="setKnowledgeStatus(\'' + key + '\',\'done\',this)" title="已掌握">✅</button>' +
+        '</div></div>';
+    }
+
+    html += '</div></div>';
+  }
 
   container.innerHTML = html;
 
-  // Update stats
-  const pct = totalChapters > 0 ? Math.round((learnedChapters / totalChapters) * 100) : 0;
+  var pct = totalChapters > 0 ? Math.round((learnedChapters / totalChapters) * 100) : 0;
   document.getElementById('knowledgePct').textContent = pct + '%';
-  document.getElementById('knowledgeCount').textContent = `${learnedChapters} / ${totalChapters} 个`;
+  document.getElementById('knowledgeCount').textContent = learnedChapters + ' / ' + totalChapters + ' 个';
 }
 
 function toggleChapters(id) {
@@ -1429,57 +1359,75 @@ function toggleNoteTag(btn) {
 }
 
 function addNote() {
-  const title = document.getElementById('noteTitle').value.trim();
-  const body = document.getElementById('noteBody').value.trim();
-  const tags = Array.from(document.querySelectorAll('.notebook-tag.active')).map(b => b.dataset.tag);
+  var title = document.getElementById('noteTitle').value.trim();
+  var body = document.getElementById('noteBody').value.trim();
+  var tags = [];
+  var activeTags = document.querySelectorAll('.notebook-tag.active');
+  for (var i = 0; i < activeTags.length; i++) {
+    tags.push(activeTags[i].dataset.tag);
+  }
 
   if (!title) { showToast('请输入问题标题', 'info'); return; }
   if (!body) { showToast('请输入详细描述', 'info'); return; }
 
   appData.notes.unshift({
     id: Date.now(),
-    title,
-    body,
-    tags,
+    title: title,
+    body: body,
+    tags: tags,
     date: todayStr()
   });
 
   saveData();
   document.getElementById('noteTitle').value = '';
   document.getElementById('noteBody').value = '';
-  document.querySelectorAll('.notebook-tag.active').forEach(b => b.classList.remove('active'));
+  var activeTags = document.querySelectorAll('.notebook-tag.active');
+  for (var i = 0; i < activeTags.length; i++) {
+    activeTags[i].classList.remove('active');
+  }
   renderNotes();
   updateStats();
   showToast('笔记已保存 📝');
 }
 
 function deleteNote(id) {
-  appData.notes = appData.notes.filter(n => n.id !== id);
+  appData.notes = appData.notes.filter(function(n) { return n.id !== id; });
   saveData();
   renderNotes();
   updateStats();
 }
 
 function renderNotes() {
-  const list = document.getElementById('notebookList');
+  var list = document.getElementById('notebookList');
   if (appData.notes.length === 0) {
     list.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:32px;font-size:13px;">还没有笔记，记录你的第一个业务问题吧！</div>';
     return;
   }
 
-  list.innerHTML = appData.notes.map(n => `
-    <div class="note-item">
-      <div class="note-item-header">
-        <span class="note-item-title">${n.title}</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="note-item-date">${formatDate(n.date)}</span>
-          <button class="note-item-delete" onclick="deleteNote(${n.id})" title="删除">✕</button>
-        </div>
-      </div>
-      <div class="note-item-body">${n.body}</div>
-      ${n.tags.length ? `<div class="note-item-tags">${n.tags.map(t => `<span class="note-item-tag">${t}</span>`).join('')}</div>` : ''}
-    </div>
-  `).join('');
+  var html = '';
+  for (var i = 0; i < appData.notes.length; i++) {
+    var n = appData.notes[i];
+    var tagsHtml = '';
+    if (n.tags.length) {
+      tagsHtml = '<div class="note-item-tags">';
+      for (var j = 0; j < n.tags.length; j++) {
+        tagsHtml += '<span class="note-item-tag">' + n.tags[j] + '</span>';
+      }
+      tagsHtml += '</div>';
+    }
+    html += '<div class="note-item">' +
+      '<div class="note-item-header">' +
+        '<span class="note-item-title">' + n.title + '</span>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+          '<span class="note-item-date">' + formatDate(n.date) + '</span>' +
+          '<button class="note-item-delete" onclick="deleteNote(' + n.id + ')" title="删除">✕</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="note-item-body">' + n.body + '</div>' +
+      tagsHtml +
+    '</div>';
+  }
+  list.innerHTML = html;
 }
 
 function exportNotes() {
@@ -1487,21 +1435,24 @@ function exportNotes() {
     showToast('没有笔记可导出', 'info');
     return;
   }
-  let text = 'CPA学习笔记 - 导出时间: ' + new Date().toLocaleString() + '\n\n';
-  text += '='.repeat(50) + '\n\n';
-  appData.notes.forEach((n, i) => {
-    text += `【${i+1}】${n.title}\n`;
-    text += `日期: ${formatDate(n.date)}\n`;
-    if (n.tags.length) text += `标签: ${n.tags.join(', ')}\n`;
-    text += `\n${n.body}\n\n`;
-    text += '-'.repeat(40) + '\n\n';
-  });
+  var text = 'CPA学习笔记 - 导出时间: ' + new Date().toLocaleString() + '\n\n';
+  for (var i = 0; i < 20; i++) text += '=';
+  text += '\n\n';
+  for (var i = 0; i < appData.notes.length; i++) {
+    var n = appData.notes[i];
+    text += '【' + (i+1) + '】' + n.title + '\n';
+    text += '日期: ' + formatDate(n.date) + '\n';
+    if (n.tags.length) text += '标签: ' + n.tags.join(', ') + '\n';
+    text += '\n' + n.body + '\n\n';
+    for (var j = 0; j < 40; j++) text += '-';
+    text += '\n\n';
+  }
 
-  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
   a.href = url;
-  a.download = `CPA学习笔记_${todayStr()}.txt`;
+  a.download = 'CPA学习笔记_' + todayStr() + '.txt';
   a.click();
   URL.revokeObjectURL(url);
   showToast('笔记已导出 📄');
@@ -1509,18 +1460,15 @@ function exportNotes() {
 
 // ============ STATS UPDATE ============
 function updateStats() {
-  // Total hours
-  const hours = (appData.totalMinutes / 60).toFixed(1);
+  var hours = (appData.totalMinutes / 60).toFixed(1);
   document.getElementById('totalHours').textContent = hours;
 
-  // Quiz accuracy
-  const total = appData.quizStats.total;
-  const correct = appData.quizStats.correct;
-  const acc = total > 0 ? Math.round((correct / total) * 100) : 0;
+  var total = appData.quizStats.total;
+  var correct = appData.quizStats.correct;
+  var acc = total > 0 ? Math.round((correct / total) * 100) : 0;
   document.getElementById('accuracy').textContent = acc + '%';
-  document.getElementById('quizCount').textContent = `共 ${total} 题`;
+  document.getElementById('quizCount').textContent = '共 ' + total + ' 题';
 
-  // Notes
   document.getElementById('noteCount').textContent = appData.notes.length;
 }
 
@@ -1538,4 +1486,4 @@ function init() {
 init();
 </script>
 </body>
-</html>
+</html
